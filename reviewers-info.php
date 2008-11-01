@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Reviewers_Info
-Plugin URI: http://photozero.net/reviewers_info/
+Plugin URI: http://photozero.net/wp-plugins/reviewers_info/
 Description: Display commenters' OS and  browser infomation on the next to Comments form.Usage:Place `&lt;?php display_commenter_info($comment); ?&gt;` between `&lt;?php foreach ($comments as $comment) : ?&gt;` and `&lt;?php endforeach;?&gt;` ALSO after `&lt;?php comment_author_link() ?&gt;`  in your current theme's `comments.php` file
-Version: 2.0
+Version: 2.1
 Author: Neekey
 Author URI: http://photozero.net/
 */
@@ -13,7 +13,7 @@ function display_commenter_info($comment){
 	$reviewers_info = analyse_user_agent($comment->comment_agent);
 	
 	//Display style. You can edit.
-	echo '(<img src="http://dev.neekey.com/flag.php?s='.$comment->comment_author_IP.'" alt="Nation Flag" title="Nation Flag" />&nbsp;'; 
+	echo '(<a href="http://www.zquery.com/ip.php?q='.$comment->comment_author_IP.'"><img src="http://www.zquery.com/flagimg.php?q='.$comment->comment_author_IP.'" alt="National Flag" title="National Flag" /></a>&nbsp;'; 
 	echo '<img src="' .get_bloginfo('url'). '/wp-content/plugins/reviewers-info/icon/' .$reviewers_info['os_icon']. '.gif" title="'.$reviewers_info['os'].'" alt="'.$reviewers_info['os'].'"/>&nbsp;'; 
 	echo '<img src="' .get_bloginfo('url'). '/wp-content/plugins/reviewers-info/icon/' .$reviewers_info['browser_icon']. '.gif" title="'.$reviewers_info['browser'].'" alt="'.$reviewers_info['browser'].'"/>)'; 
 
@@ -28,7 +28,7 @@ function analyse_user_agent($str){
 	
 	if(strpos($str,'msie') !== false){ //IE
 	
-		$pattern = '/msie\s*(.+?);/';
+		$pattern = '/msie ([0-9a-z\.]+);/';
 		preg_match($pattern,$str,$versions);
 		$version = $versions[1]; //IE VERSION
 		
@@ -70,7 +70,7 @@ function analyse_user_agent($str){
 		
 	}elseif(strpos($str,'firefox') !== false){ //Firefox
 	
-		$pattern = '/firefox\/\\s?([\\d\\.]+)/';
+		$pattern = '/firefox\/([A-Za-z0-9\.\-_]+)/';
 		preg_match($pattern,$str,$versions);
 		$version = $versions[1]; //Firefox VERSION
 		$result['browser_base'] = 'firefox';
@@ -79,13 +79,23 @@ function analyse_user_agent($str){
 		
 	}elseif(strpos($str,'opera') !== false){ //Opera
 	
-		$pattern = '/opera\/\\s?([\\d\\.]+)/';
+		$pattern = '/opera\/([A-Za-z0-9\.\-_]+)/';
 		preg_match($pattern,$str,$versions);
 		$version = $versions[1]; //OPERA VERSION
 		
 		$result['browser_base'] = 'opera';
 		$result['browser_icon'] = 'opera';
 		$result['browser'] = "Opera $version";
+		
+	}elseif(strpos($str,'chrome') !== false){ //Chrome
+	
+		$pattern = '/chrome\/([A-Za-z0-9\.\-_]+)/';
+		preg_match($pattern,$str,$versions);
+		$version = $versions[1]; //Chrome VERSION
+		
+		$result['browser_base'] = 'chrome';
+		$result['browser_icon'] = 'chrome';
+		$result['browser'] = "Google Chrome $version";
 		
 	}elseif(strpos($str,'webkit') !== false){ //Safari
 		
