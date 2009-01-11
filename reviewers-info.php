@@ -1,30 +1,28 @@
 <?php
 /*
-Plugin Name: Reviewers_Info
+Plugin Name: Reviewers Info
 Plugin URI: http://photozero.net/wp-plugins/reviewers_info/
-Description: Display commenters' OS and  browser infomation on the next to Comments form.Usage:Place `&lt;?php display_commenter_info($comment); ?&gt;` between `&lt;?php foreach ($comments as $comment) : ?&gt;` and `&lt;?php endforeach;?&gt;` ALSO after `&lt;?php comment_author_link() ?&gt;`  in your current theme's `comments.php` file
-Version: 2.1
+Description: Display commenters' OS and  browser infomation next to commenter link. Usage: Just active the plugin!(You need NOT edit your theme after this version)
+Version: 2.5
 Author: Neekey
 Author URI: http://photozero.net/
 */
 
-function display_commenter_info($comment){
-	
-	$reviewers_info = analyse_user_agent($comment->comment_agent);
-	
-	//Display style. You can edit.
-	echo '(<a href="http://www.zquery.com/ip.php?q='.$comment->comment_author_IP.'"><img src="http://www.zquery.com/flagimg.php?q='.$comment->comment_author_IP.'" alt="National Flag" title="National Flag" /></a>&nbsp;'; 
-	echo '<img src="' .get_bloginfo('url'). '/wp-content/plugins/reviewers-info/icon/' .$reviewers_info['os_icon']. '.gif" title="'.$reviewers_info['os'].'" alt="'.$reviewers_info['os'].'"/>&nbsp;'; 
-	echo '<img src="' .get_bloginfo('url'). '/wp-content/plugins/reviewers-info/icon/' .$reviewers_info['browser_icon']. '.gif" title="'.$reviewers_info['browser'].'" alt="'.$reviewers_info['browser'].'"/>)'; 
+add_filter('get_comment_author_link','display_commenter_info');
 
+function display_commenter_info($return){
+	global $comment;
+	$ua = $comment->comment_agent;
+	$ip = $comment->comment_author_IP;
+	$reviewers_info = analyse_user_agent($ua);
+	//Display style. You can edit.
+	return $return.' <a href="http://www.zquery.com/ip.php?q='.$ip.'"><img src="http://www.zquery.com/flagimg.php?q='.$ip.'" alt="National Flag" title="National Flag" /></a>&nbsp;' . '<img src="' .get_bloginfo('url'). '/wp-content/plugins/reviewers-info/icon/' .$reviewers_info['os_icon']. '.png" title="'.$reviewers_info['os'].'" alt="'.$reviewers_info['os'].'"/>&nbsp;' . '<img src="' .get_bloginfo('url'). '/wp-content/plugins/reviewers-info/icon/' .$reviewers_info['browser_icon']. '.png" title="'.$reviewers_info['browser'].'" alt="'.$reviewers_info['browser'].'"/>';
 }
 
 
 
 function analyse_user_agent($str){
 	$str = strtolower($str);
-	
-	
 	
 	if(strpos($str,'msie') !== false){ //IE
 	
@@ -58,7 +56,7 @@ function analyse_user_agent($str){
 			
 		}elseif(strpos($str,'tencenttravel') !== false){ // TT
 		
-			$result['browser_icon'] = 'tt';
+			$result['browser_icon'] = 'tencenttravel';
 			$result['browser'] = "TencentTravel based on IE $version";
 			
 		}else{
@@ -165,24 +163,6 @@ function analyse_user_agent($str){
 			$result['os'] = 'Linux';
 			$result['os_icon'] = 'linux';
 		}
-		
-	}elseif(strpos($str,'freebsd') !== false){
-		
-		$result['os_base'] = 'freebsd';
-		$result['os_icon'] = $result['os_base'];
-		$result['os'] = 'FreeBSD';
-		
-	}elseif(strpos($str,'sunos') !== false){
-		
-		$result['os_base'] = 'sunos';
-		$result['os_icon'] = $result['os_base'];
-		$result['os'] = 'SunOS';
-		
-	}elseif(strpos($str,'os/2') !== false){
-		
-		$result['os_base'] = 'os2';
-		$result['os_icon'] = $result['os_base'];
-		$result['os'] = 'OS/2';
 		
 	}else{
 		
