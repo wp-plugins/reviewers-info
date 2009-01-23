@@ -3,7 +3,7 @@
 Plugin Name: Reviewers Info
 Plugin URI: http://photozero.net/wp-plugins/reviewers_info/
 Description: Display commenters' OS and  browser infomation next to commenter link. Usage: Just active the plugin!(You need NOT edit your theme after this version)
-Version: 2.5
+Version: 2.5.1
 Author: Neekey
 Author URI: http://photozero.net/
 */
@@ -14,6 +14,8 @@ function display_commenter_info($return){
 	global $comment;
 	$ua = $comment->comment_agent;
 	$ip = $comment->comment_author_IP;
+	if(!$ip){return $return;}
+	
 	$reviewers_info = analyse_user_agent($ua);
 	//Display style. You can edit.
 	return $return.' <a href="http://www.zquery.com/ip.php?q='.$ip.'"><img src="http://www.zquery.com/flagimg.php?q='.$ip.'" alt="National Flag" title="National Flag" /></a>&nbsp;' . '<img src="' .get_bloginfo('url'). '/wp-content/plugins/reviewers-info/icon/' .$reviewers_info['os_icon']. '.png" title="'.$reviewers_info['os'].'" alt="'.$reviewers_info['os'].'"/>&nbsp;' . '<img src="' .get_bloginfo('url'). '/wp-content/plugins/reviewers-info/icon/' .$reviewers_info['browser_icon']. '.png" title="'.$reviewers_info['browser'].'" alt="'.$reviewers_info['browser'].'"/>';
