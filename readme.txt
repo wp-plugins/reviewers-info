@@ -2,8 +2,8 @@
 Contributors: neekey
 Donate link: http://photozero.net/
 Tags: visitor,comments
-Tested up to: 2.7
-Stable tag: 2.5.1
+Tested up to: 2.7.1
+Stable tag: 2.5.2
 
 Display commenters' OS and  browser infomation next to commenter link.
 
